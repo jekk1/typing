@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="id">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Latihan Ngetik - Neumorphic</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+				background: #e0e5ec;
+				min-height: 100vh;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				padding: 20px;
+			}
+
+			.container {
+				background: #e0e5ec;
+				border-radius: 30px;
+				padding: 40px;
+				max-width: 900px;
+				width: 100%;
+				box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+			}
+
+			h1 {
+				text-align: center;
+				color: #6c63ff;
+				margin-bottom: 30px;
+				font-size: 2.5em;
+				text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8),
+					-2px -2px 4px rgba(0, 0, 0, 0.1);
+				animation: float 3s ease-in-out infinite;
+			}
+
+			@keyframes float {
+				0%,
+				100% {
+					transform: translateY(0px);
+				}
+				50% {
+					transform: translateY(-10px);
+				}
+			}
+
+			.controls {
+				display: flex;
+				gap: 15px;
+				margin-bottom: 30px;
+				flex-wrap: wrap;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.controls label {
+				font-weight: bold;
+				color: #555;
+				text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+			}
+
+			.controls input,
+			.controls button {
+				padding: 12px 24px;
+				border-radius: 15px;
+				border: none;
+				font-size: 16px;
+				font-weight: 600;
+				transition: all 0.3s ease;
+			}
+
+			.controls input {
+				width: 80px;
+				text-align: center;
+				background: #e0e5ec;
+				box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
+				color: #555;
+			}
+
+			.controls input:focus {
+				outline: none;
+				box-shadow: inset 8px 8px 16px #bebebe, inset -8px -8px 16px #ffffff;
+			}
+
+			.controls button {
+				background: #e0e5ec;
+				color: #6c63ff;
+				cursor: pointer;
+				box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+				position: relative;
+				overflow: hidden;
+			}
+
+			.controls button::before {
+				content: "";
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 0;
+				height: 0;
+				border-radius: 50%;
+				background: rgba(108, 99, 255, 0.1);
+				transform: translate(-50%, -50%);
+				transition: width 0.6s, height 0.6s;
+			}
+
+			.controls button:hover::before {
+				width: 300px;
+				height: 300px;
+			}
+
+			.controls button:hover {
+				transform: translateY(-2px);
+				box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
+			}
+
+			.controls button:active {
+				box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+				transform: translateY(0);
+			}
+
+			.controls button span {
+				position: relative;
+				z-index: 1;
+			}
+
+			.stats {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+				gap: 20px;
+				margin-bottom: 30px;
+			}
+
+			.stat-box {
+				background: #e0e5ec;
+				padding: 20px;
+				border-radius: 20px;
+				text-align: center;
+				box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
+				transition: all 0.3s ease;
+				animation: statPulse 2s ease-in-out infinite;
+			}
+
+			.stat-box:nth-child(1) {
+				animation-delay: 0s;
+			}
+			.stat-box:nth-child(2) {
+				animation-delay: 0.2s;
+			}
+			.stat-box:nth-child(3) {
+				animation-delay: 0.4s;
+			}
+			.stat-box:nth-child(4) {
+				animation-delay: 0.6s;
+			}
+			.stat-box:nth-child(5) {
+				animation-delay: 0.8s;
+			}
+
+			@keyframes statPulse {
+				0%,
+				100% {
+					transform: scale(1);
+				}
+				50% {
+					transform: scale(1.02);
+				}
+			}
+
+			.stat-box:hover {
+				transform: translateY(-5px) scale(1.05);
+				box-shadow: 12px 12px 24px #bebebe, -12px -12px 24px #ffffff;
+			}
+
+			.stat-label {
+				font-size: 0.9em;
+				color: #888;
+				margin-bottom: 8px;
+				font-weight: 600;
+				text-transform: uppercase;
+				letter-spacing: 1px;
+			}
+
+			.stat-value {
+				font-size: 2em;
+				font-weight: bold;
+				color: #6c63ff;
+				text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+			}
+
+			.sentence-display {
+				background: #e0e5ec;
+				padding: 30px;
+				border-radius: 20px;
+				margin-bottom: 25px;
+				min-height: 120px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				box-shadow: inset 8px 8px 16px #bebebe, inset -8px -8px 16px #ffffff;
+				transition: all 0.3s ease;
+			}
+
+			.sentence-display:hover {
+				box-shadow: inset 10px 10px 20px #bebebe,
+					inset -10px -10px 20px #ffffff;
+			}
+
+			.sentence-text {
+				font-size: 1.5em;
+				line-height: 1.8;
+				color: #555;
+				font-family: "Courier New", monospace;
+				text-align: center;
+			}
+
+			.sentence-text .correct {
+				color: #4caf50;
+				text-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+				animation: correctChar 0.3s ease;
+			}
+
+			.sentence-text .wrong {
+				color: #f44336;
+				text-shadow: 0 0 10px rgba(244, 67, 54, 0.3);
+				animation: shake 0.3s ease;
+			}
+
+			@keyframes correctChar {
+				0% {
+					transform: scale(1);
+				}
+				50% {
+					transform: scale(1.2);
+				}
+				100% {
+					transform: scale(1);
+				}
+			}
+
+			@keyframes shake {
+				0%,
+				100% {
+					transform: translateX(0);
+				}
+				25% {
+					transform: translateX(-5px);
+				}
+				75% {
+					transform: translateX(5px);
+				}
+			}
+
+			.input-area {
+				margin-bottom: 25px;
+			}
+
+			.input-area input {
+				width: 100%;
+				padding: 18px;
+				font-size: 1.3em;
+				border: none;
+				border-radius: 20px;
+				font-family: "Courier New", monospace;
+				background: #e0e5ec;
+				box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
+				color: #555;
+				transition: all 0.3s ease;
+			}
+
+			.input-area input:focus {
+				outline: none;
+				box-shadow: inset 8px 8px 16px #bebebe, inset -8px -8px 16px #ffffff;
+				transform: scale(1.01);
+			}
+
+			.input-area input:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+
+			.progress-info {
+				text-align: center;
+				padding: 18px;
+				background: #e0e5ec;
+				border-radius: 20px;
+				font-size: 1.1em;
+				color: #555;
+				font-weight: 600;
+				box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
+				transition: all 0.3s ease;
+			}
+
+			.progress-info:hover {
+				transform: scale(1.02);
+			}
+
+			.modal {
+				display: none;
+				position: fixed;
+				z-index: 1000;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.3);
+				backdrop-filter: blur(5px);
+				animation: fadeIn 0.3s;
+			}
+
+			.modal-content {
+				background: #e0e5ec;
+				margin: 5% auto;
+				padding: 40px;
+				border-radius: 30px;
+				max-width: 600px;
+				max-height: 80vh;
+				overflow-y: auto;
+				box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+				animation: modalSlide 0.5s ease;
+			}
+
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+				}
+				to {
+					opacity: 1;
+				}
+			}
+
+			@keyframes modalSlide {
+				from {
+					transform: translateY(-100px) scale(0.8);
+					opacity: 0;
+				}
+				to {
+					transform: translateY(0) scale(1);
+					opacity: 1;
+				}
+			}
+
+			.close {
+				float: right;
+				font-size: 28px;
+				font-weight: bold;
+				cursor: pointer;
+				color: #888;
+				transition: all 0.3s;
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff;
+			}
+
+			.close:hover {
+				color: #f44336;
+				transform: rotate(90deg);
+				box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+			}
+
+			.highscore-title {
+				color: #6c63ff;
+				margin-bottom: 25px;
+				text-align: center;
+				text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+			}
+
+			.highscore-section {
+				margin-bottom: 25px;
+			}
+
+			.highscore-section h3 {
+				color: #555;
+				margin-bottom: 15px;
+				padding: 10px;
+				border-radius: 15px;
+				background: #e0e5ec;
+				box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff;
+			}
+
+			.highscore-item {
+				background: #e0e5ec;
+				padding: 15px;
+				margin: 10px 0;
+				border-radius: 15px;
+				box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff;
+				transition: all 0.3s ease;
+				animation: slideInLeft 0.5s ease;
+			}
+
+			.highscore-item:hover {
+				transform: translateX(10px);
+				box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
+			}
+
+			@keyframes slideInLeft {
+				from {
+					transform: translateX(-50px);
+					opacity: 0;
+				}
+				to {
+					transform: translateX(0);
+					opacity: 1;
+				}
+			}
+
+			/* Particle effects */
+			.particle {
+				position: fixed;
+				width: 10px;
+				height: 10px;
+				background: #6c63ff;
+				border-radius: 50%;
+				pointer-events: none;
+				animation: particleFloat 3s ease-out forwards;
+				box-shadow: 0 0 10px #6c63ff;
+			}
+
+			@keyframes particleFloat {
+				0% {
+					transform: translateY(0) scale(1);
+					opacity: 1;
+				}
+				100% {
+					transform: translateY(-100px) scale(0);
+					opacity: 0;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Typing Test</h1>
+
+			<div class="controls">
+				<label for="difficulty">Difficulty:</label>
+				<input type="number" id="difficulty" min="1" max="10" value="3" />
+				<button onclick="startSession()"><span>Start</span></button>
+				<button onclick="resetSession()"><span>Reset</span></button>
+				<button onclick="showHighscores()"><span>Highscores</span></button>
+			</div>
+
+			<div class="stats">
+				<div class="stat-box">
+					<div class="stat-label">Timer</div>
+					<div class="stat-value" id="timer">00:00</div>
+				</div>
+				<div class="stat-box">
+					<div class="stat-label">WPM</div>
+					<div class="stat-value" id="wpm">0</div>
+				</div>
+				<div class="stat-box">
+					<div class="stat-label">Akurasi</div>
+					<div class="stat-value" id="accuracy">0%</div>
+				</div>
+				<div class="stat-box">
+					<div class="stat-label">Selesai</div>
+					<div class="stat-value" id="correct">0</div>
+				</div>
+				<div class="stat-box">
+					<div class="stat-label">Typo</div>
+					<div class="stat-value" id="mistakes">0</div>
+				</div>
+			</div>
+
+			<div class="sentence-display">
+				<div class="sentence-text" id="sentenceText">
+					Pilih difficulty lalu klik Start
+				</div>
+			</div>
+
+			<div class="input-area">
+				<input
+					type="text"
+					id="inputBox"
+					placeholder="Ketik di sini..."
+					disabled
+				/>
+			</div>
+
+			<div class="progress-info" id="progressInfo">Proggres ---</div>
+		</div>
+
+		<div id="modal" class="modal">
+			<div class="modal-content">
+				<span class="close" onclick="closeModal()">&times;</span>
+				<div id="modalContent"></div>
+			</div>
+		</div>
+
+		<script>
+			const SENTENCES = [
+				"kucing itu suka makan ikan segar setiap pagi",
+				"aku belajar mengetik dengan cepat dan akurat",
+				"latihan setiap hari akan membuat kamu mahir",
+				"focus dan sabar adalah kunci sukses belajar",
+				"kecepatan datang dari pengulangan yang konsisten",
+				"akurasi lebih penting daripada kecepatan awal",
+				"gunakan posisi jari yang benar saat mengetik",
+				"baris home adalah fondasi dasar mengetik",
+				"jangan melihat keyboard saat berlatih",
+				"tetap tenang dan rileks saat mengetik",
+				"tekan tombol dengan lembut dan pasti",
+				"latihan singkat lebih efektif daripada lama",
+				"istirahat untuk menghindari kelelahan tangan",
+				"tentukan target kecil yang bisa dicapai",
+				"konsistensi mengalahkan intensitas berlebihan",
+				"periksa kesalahan dengan teliti setelah latihan",
+				"melambat dulu baru nanti bisa cepat",
+				"ketik kalimat bukan huruf per huruf",
+				"pelajari kombinasi huruf yang sering muncul",
+				"latih juga tanda baca dan angka",
+				"gunakan kedua tangan secara seimbang",
+				"jaga pergelangan tangan tetap terangkat",
+				"duduk dengan postur tubuh yang baik",
+				"atur ketinggian kursi sesuai meja",
+				"fokus membangun memori otot jari",
+				"lakukan pemanasan sebelum latihan cepat",
+				"akurasi tinggi membangun kepercayaan diri",
+				"ukur kemajuan setiap minggu secara rutin",
+				"tantang diri sendiri setiap hari",
+				"pisahkan latihan berdasarkan tingkat kesulitan",
+				"python adalah bahasa pemrograman yang mudah dipelajari",
+				"function memungkinkan kita menggunakan kode berulang kali",
+				"variable menyimpan data di dalam memori komputer",
+				"loop mengotomasi tugas yang berulang dengan mudah",
+				"conditional membantu program membuat keputusan logis",
+				"string adalah urutan karakter yang membentuk teks",
+				"list menyimpan koleksi item secara berurutan",
+				"dictionary memetakan key ke value dengan efisien",
+				"debugging meningkatkan kualitas kode program kita",
+				"membaca dokumentasi adalah hal yang sangat penting",
+				"tulis test untuk mencegah bug di masa depan",
+				"comment menjelaskan logika yang tidak jelas",
+				"format kode agar mudah dibaca orang lain",
+				"pecah tugas besar menjadi function kecil",
+				"pelajari sistem version control seperti git",
+				"latih pemikiran algoritma setiap hari",
+				"optimize kode hanya setelah melakukan profiling",
+				"gunakan nama variable yang jelas dan bermakna",
+				"tangani exception dengan cara yang tepat",
+				"bangun project kecil untuk melatih skill",
+				"masalah sinkronisasi bisa sangat sulit untuk direproduksi",
+				"memahami concurrency membutuhkan latihan dan pemikiran",
+				"urutan inisialisasi module penting di sistem kompleks",
+				"maintainability sama pentingnya dengan kecepatan awal",
+				"profiling hotspot memandu upaya optimisasi yang terarah",
+				"sistem terdistribusi memperkenalkan mode kegagalan baru",
+				"test suite yang solid memungkinkan refactoring dengan percaya diri",
+				"abstraksi yang jelas mengurangi beban kognitif developer",
+				"pesan error yang baik meningkatkan pengalaman debugging",
+				"software yang observable dengan metrik mudah dioperasikan",
+			];
+
+			let state = {
+				running: false,
+				startTime: null,
+				sessionTime: 60,
+				currentSentence: "",
+				sentencePool: [],
+				totalCharsTyped: 0,
+				correctChars: 0,
+				mistakes: 0,
+				sentencesDone: 0,
+				updateInterval: null,
+			};
+
+			function createParticles(x, y) {
+				for (let i = 0; i < 5; i++) {
+					const particle = document.createElement("div");
+					particle.className = "particle";
+					particle.style.left = x + "px";
+					particle.style.top = y + "px";
+					particle.style.animationDelay = i * 0.1 + "s";
+					document.body.appendChild(particle);
+
+					setTimeout(() => particle.remove(), 3000);
+				}
+			}
+
+			function getDifficultySettings(level) {
+				const sessionTime = Math.max(30, 90 - (level - 1) * 5);
+				let pool;
+				if (level <= 3) {
+					pool = SENTENCES.filter((s) => s.split(" ").length <= 6);
+				} else if (level <= 6) {
+					pool = SENTENCES.filter((s) => s.split(" ").length <= 12);
+				} else if (level <= 8) {
+					pool = SENTENCES.filter((s) => s.split(" ").length <= 20);
+				} else {
+					pool = [...SENTENCES];
+				}
+				return { sessionTime, pool };
+			}
+
+			function startSession() {
+				if (state.running) return;
+
+				const level = Math.max(
+					1,
+					Math.min(10, parseInt(document.getElementById("difficulty").value))
+				);
+				const settings = getDifficultySettings(level);
+
+				state.running = true;
+				state.startTime = Date.now();
+				state.sessionTime = settings.sessionTime;
+				state.sentencePool = [...settings.pool].sort(() => Math.random() - 0.5);
+				state.totalCharsTyped = 0;
+				state.correctChars = 0;
+				state.mistakes = 0;
+				state.sentencesDone = 0;
+
+				state.currentSentence =
+					state.sentencePool[
+						Math.floor(Math.random() * state.sentencePool.length)
+					];
+
+				document.getElementById("inputBox").disabled = false;
+				document.getElementById("inputBox").value = "";
+				document.getElementById("inputBox").focus();
+				document.getElementById("sentenceText").textContent =
+					state.currentSentence;
+				document.getElementById(
+					"progressInfo"
+				).textContent = `Sesi dimulai Difficulty ${level} - Good luck`;
+
+				updateStats();
+				state.updateInterval = setInterval(updateStats, 200);
+			}
+
+			function resetSession() {
+				if (state.updateInterval) {
+					clearInterval(state.updateInterval);
+				}
+				state.running = false;
+				state.totalCharsTyped = 0;
+				state.correctChars = 0;
+				state.mistakes = 0;
+				state.sentencesDone = 0;
+
+				document.getElementById("inputBox").disabled = true;
+				document.getElementById("inputBox").value = "";
+				document.getElementById("sentenceText").textContent =
+					"Pilih difficulty lalu klik Start ";
+				document.getElementById("progressInfo").textContent =
+					"Sesi direset - Siap untuk mulai lagi";
+				updateStatsDisplay(0, 0, 0, 0, 0);
+			}
+
+			function updateStats() {
+				if (!state.running) return;
+
+				const elapsed = (Date.now() - state.startTime) / 1000;
+				const remaining = Math.max(0, state.sessionTime - elapsed);
+
+				if (remaining <= 0) {
+					endSession();
+					return;
+				}
+
+				const minutes = Math.max(0.001, elapsed / 60);
+				const wpm = Math.floor(state.correctChars / 5 / minutes);
+				const accuracy =
+					state.totalCharsTyped > 0
+						? Math.floor((state.correctChars / state.totalCharsTyped) * 100)
+						: 0;
+
+				updateStatsDisplay(
+					remaining,
+					wpm,
+					accuracy,
+					state.correctChars,
+					state.mistakes
+				);
+			}
+
+			function updateStatsDisplay(remaining, wpm, accuracy, correct, mistakes) {
+				const mins = Math.floor(remaining / 60);
+				const secs = Math.floor(remaining % 60);
+				document.getElementById("timer").textContent = `${String(mins).padStart(
+					2,
+					"0"
+				)}:${String(secs).padStart(2, "0")}`;
+				document.getElementById("wpm").textContent = wpm;
+				document.getElementById("accuracy").textContent = accuracy + "%";
+				document.getElementById("correct").textContent = correct;
+				document.getElementById("mistakes").textContent = mistakes;
+			}
+
+			function endSession() {
+				clearInterval(state.updateInterval);
+				state.running = false;
+
+				const elapsed = (Date.now() - state.startTime) / 1000;
+				const minutes = Math.max(0.001, elapsed / 60);
+				const wpm = Math.floor(state.correctChars / 5 / minutes);
+				const accuracy =
+					state.totalCharsTyped > 0
+						? ((state.correctChars / state.totalCharsTyped) * 100).toFixed(2)
+						: 0;
+
+				const summary = `
+                <h2 class="highscore-title">Sesi Selesai</h2>
+                <div style="text-align: center; font-size: 1.2em; line-height: 2; color: #555;">
+                    <p><strong>WPM:</strong> ${wpm}</p>
+                    <p><strong>Accuracy:</strong> ${accuracy}%</p>
+                    <p><strong>Correct chars:</strong> ${state.correctChars}</p>
+                    <p><strong>Mistakes:</strong> ${state.mistakes}</p>
+                    <p><strong>Sentences done:</strong> ${state.sentencesDone}</p>
+                </div>
+            `;
+
+				document.getElementById("modalContent").innerHTML = summary;
+				document.getElementById("modal").style.display = "block";
+				document.getElementById(
+					"progressInfo"
+				).textContent = `Sesi selesai WPM: ${wpm} | Accuracy: ${accuracy}% `;
+
+				saveHighscore(wpm, parseFloat(accuracy));
+			}
+
+			function saveHighscore(wpm, accuracy) {
+				const level = document.getElementById("difficulty").value;
+				let highscores = JSON.parse(
+					localStorage.getItem("typingHighscores") || "{}"
+				);
+
+				if (!highscores[level]) {
+					highscores[level] = [];
+				}
+
+				highscores[level].push({
+					wpm: wpm,
+					accuracy: accuracy,
+					time: Date.now(),
+				});
+
+				highscores[level].sort(
+					(a, b) => b.wpm - a.wpm || b.accuracy - a.accuracy
+				);
+				highscores[level] = highscores[level].slice(0, 10);
+
+				localStorage.setItem("typingHighscores", JSON.stringify(highscores));
+			}
+
+			function showHighscores() {
+				const highscores = JSON.parse(
+					localStorage.getItem("typingHighscores") || "{}"
+				);
+
+				if (Object.keys(highscores).length === 0) {
+					document.getElementById("modalContent").innerHTML =
+						'<h2 class="highscore-title">no highscore</h2><p style="text-align: center; color: #888;">Mulai bermain untuk membuat record</p>';
+				} else {
+					let html = '<h2 class="highscore-title">Highscores</h2>';
+
+					Object.keys(highscores)
+						.sort((a, b) => parseInt(a) - parseInt(b))
+						.forEach((level) => {
+							html += `<div class="highscore-section"><h3>🎮 Difficulty ${level}</h3>`;
+							highscores[level].forEach((record, i) => {
+								const date = new Date(record.time).toLocaleString("id-ID");
+								const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "🏅";
+								html += `<div class="highscore-item">${medal} ${i + 1}. WPM ${
+									record.wpm
+								} | Acc ${record.accuracy}% | ${date}</div>`;
+							});
+							html += "</div>";
+						});
+
+					document.getElementById("modalContent").innerHTML = html;
+				}
+
+				document.getElementById("modal").style.display = "block";
+			}
+
+			function closeModal() {
+				document.getElementById("modal").style.display = "none";
+			}
+
+			document.getElementById("inputBox").addEventListener("input", (e) => {
+				if (!state.running) return;
+
+				const typed = e.target.value;
+				let correct = 0;
+				let html = "";
+
+				if (!state._typoMap) state._typoMap = {};
+
+				for (let i = 0; i < state.currentSentence.length; i++) {
+					if (i < typed.length) {
+						if (typed[i] === state.currentSentence[i]) {
+							html += `<span class="correct">${state.currentSentence[i]}</span>`;
+							correct++;
+						} else {
+							html += `<span class="wrong">${state.currentSentence[i]}</span>`;
+
+							if (state._typoMap[i] !== typed[i]) {
+								state.mistakes++;
+								state._typoMap[i] = typed[i];
+							}
+						}
+					} else {
+						html += state.currentSentence[i];
+					}
+				}
+
+				document.getElementById("sentenceText").innerHTML = html;
+				state.correctChars = correct;
+
+				if (typed === state.currentSentence) {
+					state.sentencesDone++;
+					
+					// Create particles effect
+					const rect = e.target.getBoundingClientRect();
+					createParticles(rect.left + rect.width / 2, rect.top);
+
+					state.currentSentence =
+						state.sentencePool[
+							Math.floor(Math.random() * state.sentencePool.length)
+						];
+					e.target.value = "";
+					document.getElementById("sentenceText").textContent =
+						state.currentSentence;
+					document.getElementById(
+						"progressInfo"
+					).textContent = `Mantap ${state.sentencesDone} kalimat selesai`;
+
+					state._typoMap = {};
+				}
+			});
+
+			window.onclick = (e) => {
+				if (e.target === document.getElementById("modal")) {
+					closeModal();
+				}
+			};
+		</script>
+	</body>
+</html>
