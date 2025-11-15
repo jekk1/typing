@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Latihan Ngetik - Neumorphic</title>
+		<title>Latihan Ngetik</title>
 		<style>
 			* {
 				margin: 0;
@@ -436,6 +436,14 @@
 					opacity: 0;
 				}
 			}
+
+			/* Prevent text selection */
+			.sentence-text, .sentence-display, .stat-value, .stat-label, .progress-info {
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
 		</style>
 	</head>
 	<body>
@@ -444,7 +452,9 @@
 
 			<div class="controls">
 				<label for="difficulty">Difficulty:</label>
-				<input type="number" id="difficulty" min="1" max="10" value="3" />
+				<input type="number" id="difficulty" min="1" max="10" value="3" readonly />
+				<button onclick="decreaseDifficulty()"><span>&lt;</span></button>
+				<button onclick="increaseDifficulty()"><span>&gt;</span></button>
 				<button onclick="startSession()"><span>Start</span></button>
 				<button onclick="resetSession()"><span>Reset</span></button>
 				<button onclick="showHighscores()"><span>Highscores</span></button>
@@ -460,12 +470,12 @@
 					<div class="stat-value" id="wpm">0</div>
 				</div>
 				<div class="stat-box">
-					<div class="stat-label">Akurasi</div>
-					<div class="stat-value" id="accuracy">0%</div>
+					<div class="stat-label">Kalimat</div>
+					<div class="stat-value" id="kalimat">0</div>
 				</div>
 				<div class="stat-box">
-					<div class="stat-label">Selesai</div>
-					<div class="stat-value" id="correct">0</div>
+					<div class="stat-label">Perfect</div>
+					<div class="stat-value" id="perfect">0</div>
 				</div>
 				<div class="stat-box">
 					<div class="stat-label">Typo</div>
@@ -499,7 +509,7 @@
 		</div>
 
 		<script>
-			const SENTENCES = [
+			const SENTENCES_LVL1 = [
 				"kucing itu suka makan ikan segar setiap pagi",
 				"aku belajar mengetik dengan cepat dan akurat",
 				"latihan setiap hari akan membuat kamu mahir",
@@ -530,6 +540,9 @@
 				"ukur kemajuan setiap minggu secara rutin",
 				"tantang diri sendiri setiap hari",
 				"pisahkan latihan berdasarkan tingkat kesulitan",
+			];
+
+			const SENTENCES_LVL2 = [
 				"python adalah bahasa pemrograman yang mudah dipelajari",
 				"function memungkinkan kita menggunakan kode berulang kali",
 				"variable menyimpan data di dalam memori komputer",
@@ -550,6 +563,9 @@
 				"gunakan nama variable yang jelas dan bermakna",
 				"tangani exception dengan cara yang tepat",
 				"bangun project kecil untuk melatih skill",
+			];
+
+			const SENTENCES_LVL3 = [
 				"masalah sinkronisasi bisa sangat sulit untuk direproduksi",
 				"memahami concurrency membutuhkan latihan dan pemikiran",
 				"urutan inisialisasi module penting di sistem kompleks",
@@ -562,16 +578,122 @@
 				"software yang observable dengan metrik mudah dioperasikan",
 			];
 
+			const SENTENCES_LVL4 = [
+				"arsitektur mikroservis menawarkan fleksibilitas dalam pengembangan",
+				"containerisasi memudahkan deployment aplikasi modern",
+				"api gateway menjadi titik masuk utama dalam sistem terdistribusi",
+				"load balancing mendistribusikan beban secara merata",
+				"cache layer meningkatkan performa aplikasi secara signifikan",
+				"message queue memungkinkan komunikasi asinkron antar layanan",
+				"event sourcing menyimpan perubahan sebagai rangkaian event",
+				"cqrs memisahkan operasi baca dan tulis untuk efisiensi",
+				"domain driven design memetakan model bisnis ke kode",
+				"hexagonal architecture memisahkan logika inti dari infrastruktur",
+			];
+
+			const SENTENCES_LVL5 = [
+				"machine learning memungkinkan sistem belajar dari data",
+				"neural network meniru struktur otak dalam pemrosesan informasi",
+				"deep learning menggunakan lapisan tersembunyi untuk belajar fitur",
+				"natural language processing memahami bahasa manusia",
+				"computer vision mengenali objek dalam gambar secara otomatis",
+				"reinforcement learning mengoptimalkan keputusan melalui reward",
+				"gradient descent menemukan minimum fungsi loss secara iteratif",
+				"backpropagation menyesuaikan bobot jaringan secara efisien",
+				"transfer learning memanfaatkan model yang sudah dilatih",
+				"ensemble methods menggabungkan beberapa model untuk akurasi",
+			];
+
+			const SENTENCES_LVL6 = [
+				"blockchain menyediakan buku besar yang tidak bisa dimanipulasi",
+				"smart contract mengeksekusi perjanjian secara otomatis",
+				"decentralized finance menggantikan sistem keuangan tradisional",
+				"non fungible token merepresentasikan aset digital unik",
+				"consensus mechanism menjamin konsistensi data di jaringan",
+				"cryptocurrency menggunakan kriptografi untuk keamanan",
+				"distributed ledger menyimpan catatan transaksi di banyak node",
+				"proof of work membutuhkan daya komputasi untuk validasi",
+				"proof of stake memilih validator berdasarkan jumlah stake",
+				"web3 menghadirkan internet yang lebih desentralisasi",
+			];
+
+			const SENTENCES_LVL7 = [
+				"quantum computing memanfaatkan prinsip mekanika kuantum",
+				"qubit dapat berada dalam superposisi keadaan",
+				"quantum entanglement menghubungkan qubit secara instan",
+				"quantum supremacy menunjukkan keunggulan komputasi kuantum",
+				"quantum algorithms menyelesaikan masalah klasik lebih cepat",
+				"quantum cryptography menawarkan keamanan informasi mutlak",
+				"quantum error correction memperbaiki kesalahan kuantum",
+				"quantum teleportation mentransfer informasi kuantum",
+				"quantum simulation memodelkan sistem kuantum kompleks",
+				"quantum sensors mencapai akurasi pengukuran luar biasa",
+			];
+
+			const SENTENCES_LVL8 = [
+				"artificial general intelligence meniru kecerdasan manusia",
+				"neuromorphic computing meniru arsitektur otak biologis",
+				"synthetic biology merekayasa sistem biologis secara digital",
+				"augmented reality menggabungkan dunia nyata dan digital",
+				"virtual reality menciptakan lingkungan buatan yang imersif",
+				"extended reality menggabungkan berbagai teknologi realitas",
+				"internet of things menghubungkan perangkat secara otomatis",
+				"edge computing memproses data dekat sumber aslinya",
+				"fog computing menyebarkan komputasi di lapisan jaringan",
+				"cloud native architecture dirancang untuk komputasi awan",
+			];
+
+			const SENTENCES_LVL9 = [
+				"quantum cryptography menawarkan keamanan mutlak berdasarkan prinsip fisika",
+				"neuromorphic chips meniru cara otak memproses informasi secara efisien",
+				"bioinformatics menggabungkan biologi dan ilmu komputer",
+				"computational linguistics menganalisis struktur bahasa secara otomatis",
+				"algorithmic trading menggunakan model matematis untuk investasi",
+				"computational neuroscience mempelajari otak melalui simulasi",
+				"synthetic biology merekayasa sistem biologis secara digital",
+				"quantum machine learning menggabungkan komputasi kuantum dan AI",
+				"topological quantum computing menggunakan anyon untuk qubit",
+				"quantum error correction memperbaiki kesalahan tanpa mengganggu qubit",
+			];
+
+			const SENTENCES_LVL10 = [
+				"molecular quantum computing menggunakan molekul sebagai qubit",
+				"quantum neural networks menggabungkan jaringan kuantum dan klasik",
+				"quantum machine learning algorithms menyelesaikan masalah klasik",
+				"quantum supremacy experiments membuktikan keunggulan komputasi kuantum",
+				"topological quantum field theory menggambarkan sistem kuantum",
+				"quantum error correction codes melindungi informasi kuantum",
+				"quantum teleportation protocols mentransfer informasi kuantum",
+				"quantum cryptography protocols menjamin keamanan komunikasi",
+				"quantum simulation algorithms memodelkan sistem kuantum kompleks",
+				"quantum algorithmic complexity mengukur efisiensi algoritma kuantum",
+			];
+
+			// Map level to sentence arrays
+			const SENTENCE_LEVELS = {
+				1: SENTENCES_LVL1,
+				2: SENTENCES_LVL2,
+				3: SENTENCES_LVL3,
+				4: SENTENCES_LVL4,
+				5: SENTENCES_LVL5,
+				6: SENTENCES_LVL6,
+				7: SENTENCES_LVL7,
+				8: SENTENCES_LVL8,
+				9: SENTENCES_LVL9,
+				10: SENTENCES_LVL10
+			};
+
 			let state = {
 				running: false,
 				startTime: null,
-				sessionTime: 60,
+				sessionTime: 120, // 2 minutes
 				currentSentence: "",
 				sentencePool: [],
 				totalCharsTyped: 0,
 				correctChars: 0,
 				mistakes: 0,
-				sentencesDone: 0,
+				kalimat: 0,
+				perfect: 0,
 				updateInterval: null,
 			};
 
@@ -589,18 +711,26 @@
 			}
 
 			function getDifficultySettings(level) {
-				const sessionTime = Math.max(30, 90 - (level - 1) * 5);
-				let pool;
-				if (level <= 3) {
-					pool = SENTENCES.filter((s) => s.split(" ").length <= 6);
-				} else if (level <= 6) {
-					pool = SENTENCES.filter((s) => s.split(" ").length <= 12);
-				} else if (level <= 8) {
-					pool = SENTENCES.filter((s) => s.split(" ").length <= 20);
-				} else {
-					pool = [...SENTENCES];
-				}
+				// Consistent 120-second (2-minute) sessions for all difficulties
+				const sessionTime = 120;
+				const pool = SENTENCE_LEVELS[level] || SENTENCE_LEVELS[1];
 				return { sessionTime, pool };
+			}
+
+			function decreaseDifficulty() {
+				if (state.running) return;
+				const currentLevel = parseInt(document.getElementById("difficulty").value);
+				if (currentLevel > 1) {
+					document.getElementById("difficulty").value = currentLevel - 1;
+				}
+			}
+
+			function increaseDifficulty() {
+				if (state.running) return;
+				const currentLevel = parseInt(document.getElementById("difficulty").value);
+				if (currentLevel < 10) {
+					document.getElementById("difficulty").value = currentLevel + 1;
+				}
 			}
 
 			function startSession() {
@@ -619,7 +749,8 @@
 				state.totalCharsTyped = 0;
 				state.correctChars = 0;
 				state.mistakes = 0;
-				state.sentencesDone = 0;
+				state.kalimat = 0;
+				state.perfect = 0;
 
 				state.currentSentence =
 					state.sentencePool[
@@ -647,7 +778,8 @@
 				state.totalCharsTyped = 0;
 				state.correctChars = 0;
 				state.mistakes = 0;
-				state.sentencesDone = 0;
+				state.kalimat = 0;
+				state.perfect = 0;
 
 				document.getElementById("inputBox").disabled = true;
 				document.getElementById("inputBox").value = "";
@@ -670,22 +802,19 @@
 				}
 
 				const minutes = Math.max(0.001, elapsed / 60);
-				const wpm = Math.floor(state.correctChars / 5 / minutes);
-				const accuracy =
-					state.totalCharsTyped > 0
-						? Math.floor((state.correctChars / state.totalCharsTyped) * 100)
-						: 0;
+				// WPM = (correct characters / 5) / minutes
+				const wpm = Math.round((state.correctChars / 5) / minutes);
 
 				updateStatsDisplay(
 					remaining,
 					wpm,
-					accuracy,
-					state.correctChars,
+					state.kalimat,
+					state.perfect,
 					state.mistakes
 				);
 			}
 
-			function updateStatsDisplay(remaining, wpm, accuracy, correct, mistakes) {
+			function updateStatsDisplay(remaining, wpm, kalimat, perfect, mistakes) {
 				const mins = Math.floor(remaining / 60);
 				const secs = Math.floor(remaining % 60);
 				document.getElementById("timer").textContent = `${String(mins).padStart(
@@ -693,8 +822,8 @@
 					"0"
 				)}:${String(secs).padStart(2, "0")}`;
 				document.getElementById("wpm").textContent = wpm;
-				document.getElementById("accuracy").textContent = accuracy + "%";
-				document.getElementById("correct").textContent = correct;
+				document.getElementById("kalimat").textContent = kalimat;
+				document.getElementById("perfect").textContent = perfect;
 				document.getElementById("mistakes").textContent = mistakes;
 			}
 
@@ -704,20 +833,15 @@
 
 				const elapsed = (Date.now() - state.startTime) / 1000;
 				const minutes = Math.max(0.001, elapsed / 60);
-				const wpm = Math.floor(state.correctChars / 5 / minutes);
-				const accuracy =
-					state.totalCharsTyped > 0
-						? ((state.correctChars / state.totalCharsTyped) * 100).toFixed(2)
-						: 0;
+				const wpm = Math.round((state.correctChars / 5) / minutes);
 
 				const summary = `
                 <h2 class="highscore-title">Sesi Selesai</h2>
                 <div style="text-align: center; font-size: 1.2em; line-height: 2; color: #555;">
                     <p><strong>WPM:</strong> ${wpm}</p>
-                    <p><strong>Accuracy:</strong> ${accuracy}%</p>
-                    <p><strong>Correct chars:</strong> ${state.correctChars}</p>
+                    <p><strong>Kalimat:</strong> ${state.kalimat}</p>
+                    <p><strong>Perfect:</strong> ${state.perfect}</p>
                     <p><strong>Mistakes:</strong> ${state.mistakes}</p>
-                    <p><strong>Sentences done:</strong> ${state.sentencesDone}</p>
                 </div>
             `;
 
@@ -725,12 +849,12 @@
 				document.getElementById("modal").style.display = "block";
 				document.getElementById(
 					"progressInfo"
-				).textContent = `Sesi selesai WPM: ${wpm} | Accuracy: ${accuracy}% `;
+				).textContent = `Sesi selesai WPM: ${wpm} | Kalimat: ${state.kalimat} | Perfect: ${state.perfect}`;
 
-				saveHighscore(wpm, parseFloat(accuracy));
+				saveHighscore(wpm, state.kalimat, state.perfect);
 			}
 
-			function saveHighscore(wpm, accuracy) {
+			function saveHighscore(wpm, kalimat, perfect) {
 				const level = document.getElementById("difficulty").value;
 				let highscores = JSON.parse(
 					localStorage.getItem("typingHighscores") || "{}"
@@ -742,12 +866,13 @@
 
 				highscores[level].push({
 					wpm: wpm,
-					accuracy: accuracy,
+					kalimat: kalimat,
+					perfect: perfect,
 					time: Date.now(),
 				});
 
 				highscores[level].sort(
-					(a, b) => b.wpm - a.wpm || b.accuracy - a.accuracy
+					(a, b) => b.wpm - a.wpm || b.kalimat - a.kalimat
 				);
 				highscores[level] = highscores[level].slice(0, 10);
 
@@ -768,13 +893,13 @@
 					Object.keys(highscores)
 						.sort((a, b) => parseInt(a) - parseInt(b))
 						.forEach((level) => {
-							html += `<div class="highscore-section"><h3>🎮 Difficulty ${level}</h3>`;
+							html += `<div class="highscore-section"><h3>Difficulty ${level}</h3>`;
 							highscores[level].forEach((record, i) => {
 								const date = new Date(record.time).toLocaleString("id-ID");
 								const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "🏅";
 								html += `<div class="highscore-item">${medal} ${i + 1}. WPM ${
 									record.wpm
-								} | Acc ${record.accuracy}% | ${date}</div>`;
+								} | Kalimat ${record.kalimat} | Perfect ${record.perfect} | ${date}</div>`;
 							});
 							html += "</div>";
 						});
@@ -794,9 +919,8 @@
 
 				const typed = e.target.value;
 				let correct = 0;
+				let mistakes = 0;
 				let html = "";
-
-				if (!state._typoMap) state._typoMap = {};
 
 				for (let i = 0; i < state.currentSentence.length; i++) {
 					if (i < typed.length) {
@@ -805,22 +929,34 @@
 							correct++;
 						} else {
 							html += `<span class="wrong">${state.currentSentence[i]}</span>`;
-
-							if (state._typoMap[i] !== typed[i]) {
-								state.mistakes++;
-								state._typoMap[i] = typed[i];
-							}
+							mistakes++;
 						}
 					} else {
 						html += state.currentSentence[i];
 					}
 				}
 
+				// Only count new mistakes if we're still typing the current sentence
+				if (typed.length <= state.currentSentence.length) {
+					state.mistakes += mistakes;
+				}
+
 				document.getElementById("sentenceText").innerHTML = html;
 				state.correctChars = correct;
+				state.totalCharsTyped = typed.length;
 
 				if (typed === state.currentSentence) {
-					state.sentencesDone++;
+					state.kalimat++;
+					
+					// Check if it was a perfect sentence (no mistakes during typing)
+					// We'll track this per sentence by comparing mistakes at start vs end
+					if (!state.sentenceMistakes) state.sentenceMistakes = 0;
+					const mistakesAtStart = state.sentenceMistakes;
+					const mistakesAtEnd = state.mistakes;
+					
+					if (mistakesAtEnd === mistakesAtStart) {
+						state.perfect++;
+					}
 					
 					// Create particles effect
 					const rect = e.target.getBoundingClientRect();
@@ -835,9 +971,10 @@
 						state.currentSentence;
 					document.getElementById(
 						"progressInfo"
-					).textContent = `Mantap ${state.sentencesDone} kalimat selesai`;
+					).textContent = `Mantap! Kalimat: ${state.kalimat} | Perfect: ${state.perfect}`;
 
-					state._typoMap = {};
+					// Update mistake counter for next sentence
+					state.sentenceMistakes = state.mistakes;
 				}
 			});
 
